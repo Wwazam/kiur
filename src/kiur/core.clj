@@ -3,40 +3,37 @@
    [quil.core :as q]
    [quil.middleware :as qm]))
 
-(def min-r 10)
+(def default-state {:player {:x 100 :y 100}})
 
 (defn setup []
-  ; initial state
-  {:x 0 :y 0 :r min-r})
+  default-state)
+
+(defn draw-player [{:keys [x y]}]
+  (q/with-translation [x y]
+    (q/ellipse 0 0 10 10)))
+(defn draw-state [state]
+  (q/background 255)
+  (draw-player (:player state)))
 
 (defn update-state [state]
-  ; increase radius of the circle by 1 on each frame
-  (update-in state [:r] identity))
-
-(defn draw [state]
-  (q/background 255)
-  (q/ellipse (:x state) (:y state) (:r state) (:r state)))
-
-; decrease radius by 1 but keeping it not less than min-r
-(defn shrink [r]
-  (max min-r (dec r)))
-
-(defn mouse-moved [state event]
-  (-> state
-      ; set circle position to mouse position
-      (assoc :x (:x event) :y (:y event))
-      ; decrease radius
-      (update-in [:r] shrink)))
+  (-> state))
+(defn mouse-moved [state _]
+  (-> state))
 (defn mouse-clicked [state _]
-  (-> state
-      (assoc :r 100)))
+  (-> state))
+
+(defn key-pressed [state event]
+  (case (:key event)
+    :r default-state
+    state))
 
 (comment (q/defsketch example
            :size [500 1000]
            :setup setup
-           :draw draw
+           :draw draw-state
            :update update-state
            :mouse-moved mouse-moved
            :mouse-clicked mouse-clicked
+           :key-pressed key-pressed
            :features [:resizable]
            :middleware [qm/fun-mode]))
