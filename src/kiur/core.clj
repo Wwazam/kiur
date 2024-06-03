@@ -1,39 +1,39 @@
 (ns kiur.core
   (:require
+   [kiur.event :as event]
+   [kiur.state :as state]
    [quil.core :as q]
    [quil.middleware :as qm]))
 
-(def default-state {:player {:x 100 :y 100}})
-
 (defn setup []
-  default-state)
+  state/default-state)
 
-(defn draw-player [{:keys [x y]}]
+(defn draw-player [{{:keys [x y]} :player
+                    {{px :x py :y} :pointer} :controller}]
+  (q/line x y px py)
   (q/with-translation [x y]
     (q/ellipse 0 0 10 10)))
 (defn draw-state [state]
   (q/background 255)
-  (draw-player (:player state)))
+  (draw-player state))
 
 (defn update-state [state]
   (-> state))
-(defn mouse-moved [state _]
-  (-> state))
-(defn mouse-clicked [state _]
-  (-> state))
 
-(defn key-pressed [state event]
-  (case (:key event)
-    :r default-state
-    state))
+(defn make-handler [type]
+  (fn [st ev]
+    (let [ev (assoc (if (map? ev) ev {:value ev}) :type type)]
+      (event/event st ev))))
 
 (comment (q/defsketch example
-           :size [500 1000]
+           :size [650 400]
            :setup setup
            :draw draw-state
            :update update-state
-           :mouse-moved mouse-moved
-           :mouse-clicked mouse-clicked
-           :key-pressed key-pressed
+           :mouse-moved (make-handler :mouse-moved)
+           :mouse-wheel (make-handler :mouse-wheel)
+           :mouse-clicked (make-handler :mouse-clicked)
+           :key-pressed (make-handler :key-pressed)
+           :key-released (make-handler :key-released)
            :features [:resizable]
            :middleware [qm/fun-mode]))
