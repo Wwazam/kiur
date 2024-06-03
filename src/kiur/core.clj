@@ -6,7 +6,7 @@
    [quil.middleware :as qm]))
 
 (defn setup []
-  state/default-state)
+  (state/default-state))
 
 (defn draw-player [{{:keys [x y]} :player
                     {{px :x py :y} :pointer} :controller}]

@@ -15,7 +15,7 @@
 (defmethod event :key-pressed
   [state event]
   (case (:key event)
-    :r state/default-state
+    :r (state/default-state)
     state))
 (defmethod event :mouse-moved
   [state event]

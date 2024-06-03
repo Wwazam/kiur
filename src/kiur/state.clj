@@ -1,5 +1,9 @@
-(ns kiur.state)
+(ns kiur.state
+  (:require
+   [kiur.keymap :as keymap]))
 
-(def default-state {:player {:x 100 :y 100}
-                    :controller {:direction #{}}
-                    :debug false})
+(defn default-state  []
+  {:player {:x 100 :y 100}
+   :controller {:direction #{}
+                :keymap keymap/dvorak}
+   :debug false})
