@@ -6,9 +6,9 @@
 (defmulti event #'-event-type)
 
 (defmethod event :mouse-pressed
-  [state _] (println state _) state)
+  [state _]  state)
 (defmethod event :mouse-released
-  [state _] (println state _) state)
+  [state _]  state)
 (defmethod event :mouse-wheel
   [state event]
   state)
