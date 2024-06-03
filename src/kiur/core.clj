@@ -32,7 +32,8 @@
            :update update-state
            :mouse-moved (make-handler :mouse-moved)
            :mouse-wheel (make-handler :mouse-wheel)
-           :mouse-clicked (make-handler :mouse-clicked)
+           :mouse-pressed (make-handler :mouse-pressed)
+           :mouse-released (make-handler :mouse-released)
            :key-pressed (make-handler :key-pressed)
            :key-released (make-handler :key-released)
            :features [:resizable]

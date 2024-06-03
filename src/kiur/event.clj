@@ -5,8 +5,10 @@
 (defn- -event-type [_state event]  (:type event))
 (defmulti event #'-event-type)
 
-(defmethod event :mouse-clicked
-  [state _] (println state) state)
+(defmethod event :mouse-pressed
+  [state _] (println state _) state)
+(defmethod event :mouse-released
+  [state _] (println state _) state)
 (defmethod event :mouse-wheel
   [state event]
   state)
