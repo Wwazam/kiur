@@ -5,5 +5,5 @@
 (defn default-state  []
   {:player {:x 100 :y 100}
    :controller {:direction #{}
-                :keymap keymap/dvorak}
+                :keymap keymap/dvorak-kb}
    :debug false})
