@@ -10,7 +10,7 @@
 
 (defn draw-player [{{:keys [x y]} :player
                     {{px :x py :y} :pointer} :controller}]
-  (q/line x y px py)
+  (when (and px py) (q/line x y px py))
   (q/with-translation [x y]
     (q/ellipse 0 0 10 10)))
 (defn draw-state [state]
