@@ -1,11 +1,14 @@
-(ns kiur.keymap)
+(ns kiur.keymap
+  (:require
+   [clojure.spec.alpha :as s]))
+
 (defmacro kw [s]
   `(keyword (str ~s)))
 
 (defn str->key-list [string]
   (mapv #(kw %) string))
 
-(def qwerty-kb (str->key-list "`1234567890-=qwertyuiop[]\\asdfghjkl;'zxcvbnm,./"))
+(def qwerty-kb (str->key-list "`1234567890-=qwertyuiop[]asdfghjkl;'zxcvbnm,./"))
 (def dvorak-kb (str->key-list "`1234567890[]',.pyfgcrl/=aoeuidhtns-\\;qjkxbmwvz"))
 
 (defn key-list->qwerty [keys]
@@ -13,4 +16,16 @@
        (map vector qwerty-kb)
        (reduce (fn [m [v k]] (assoc m k v)) {})))
 
-((key-list->qwerty dvorak) (keyword ","))
+(def qwerty-keymap {:w :accelerate-up
+                    :a :accelerate-left
+                    :s :accelerate-down
+                    :d :accelerate-right})
+
+(defn keymap [keyboard]
+  (->> (map vector keyboard qwerty-kb)
+       (reduce (fn [m [k qw-val]] (assoc m k (qwerty-keymap qw-val identity))) {})))
+
+(s/assert #{:accelerate-up} ((kw \,) (keymap dvorak-kb)))
+(s/assert #{:accelerate-down} ((kw \o) (keymap dvorak-kb)))
+(s/assert #{:accelerate-right} ((kw \e) (keymap dvorak-kb)))
+(s/assert #{:accelerate-left} ((kw \a) (keymap dvorak-kb)))
