@@ -1,5 +1,6 @@
 (ns kiur.core
   (:require
+   [kiur.draw :as draw]
    [kiur.event :as event]
    [kiur.state :as state]
    [quil.core :as q]
@@ -9,14 +10,6 @@
   (q/frame-rate frame-rate)
   (state/default-state))
 
-(defn draw-player [{{:keys [x y]} :player
-                    {{px :x py :y} :pointer} :controller}]
-  (when (and px py) (q/line x y px py))
-  (q/with-translation [x y]
-    (q/ellipse 0 0 20 20)))
-(defn draw-state [state]
-  (q/background 255)
-  (draw-player state))
 
 (defn update-state [state]
   (-> state))
@@ -40,8 +33,8 @@
   (defapp kiur
     {:size [650 400]
      :setup #(setup frame-rate)
-     :draw draw-state
      :update update-state
+     :draw draw/draw-state
      :handler make-handler
      :features [:resizable]
      :middleware [qm/fun-mode]}))
