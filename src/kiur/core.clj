@@ -5,7 +5,8 @@
    [quil.core :as q]
    [quil.middleware :as qm]))
 
-(defn setup []
+(defn setup [frame-rate]
+  (q/frame-rate frame-rate)
   (state/default-state))
 
 (defn draw-player [{{:keys [x y]} :player
@@ -25,16 +26,26 @@
     (let [ev (assoc (if (map? ev) ev {:value ev}) :type type)]
       (event/event st ev))))
 
-(comment (q/defsketch example
-           :size [650 400]
-           :setup setup
-           :draw draw-state
-           :update update-state
-           :mouse-moved (make-handler :mouse-moved)
-           :mouse-wheel (make-handler :mouse-wheel)
-           :mouse-pressed (make-handler :mouse-pressed)
-           :mouse-released (make-handler :mouse-released)
-           :key-pressed (make-handler :key-pressed)
-           :key-released (make-handler :key-released)
-           :features [:resizable]
-           :middleware [qm/fun-mode]))
+(defmacro defapp [name config]
+  (let [init-config (->> config
+                         (mapcat (fn [[k :as v]] (if (#{:size :setup :draw :update :middleware :features} k) v [])))
+                         vec)
+        quil-config (->> [:mouse-moved :mouse-wheel :mouse-pressed :mouse-released :key-pressed :key-released]
+                         (mapcat #(vector % `(make-handler ~%)))
+                         (concat init-config))]
+    ^{:clj-kondo/ignore [:inline-def]}
+    `(q/defsketch ~name ~@quil-config)))
+
+(defn start-app [{:keys [frame-rate]}]
+  (defapp kiur
+    {:size [650 400]
+     :setup #(setup frame-rate)
+     :draw draw-state
+     :update update-state
+     :handler make-handler
+     :features [:resizable]
+     :middleware [qm/fun-mode]}))
+
+(comment
+  (let [config {:frame-rate 60}]
+    (start-app config)))
