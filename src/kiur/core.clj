@@ -3,6 +3,7 @@
    [kiur.draw :as draw]
    [kiur.event :as event]
    [kiur.state :as state]
+   [kiur.update :as update]
    [quil.core :as q]
    [quil.middleware :as qm]))
 
@@ -11,8 +12,6 @@
   (state/default-state))
 
 
-(defn update-state [state]
-  (-> state))
 
 (defn make-handler [type]
   (fn [st ev]
@@ -33,8 +32,8 @@
   (defapp kiur
     {:size [650 400]
      :setup #(setup frame-rate)
-     :update update-state
      :draw draw/draw-state
+     :update update/update-state
      :handler make-handler
      :features [:resizable]
      :middleware [qm/fun-mode]}))
