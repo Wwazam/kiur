@@ -8,10 +8,9 @@
    [quil.middleware :as qm]))
 
 (defn setup [frame-rate]
-  (q/frame-rate frame-rate)
-  (state/default-state))
-
-
+  (fn []
+    (q/frame-rate frame-rate)
+    (state/default-state)))
 
 (defn make-handler [type]
   (fn [st ev]
@@ -31,7 +30,7 @@
 (defn start-app [{:keys [frame-rate]}]
   (defapp kiur
     {:size [650 400]
-     :setup #(setup frame-rate)
+     :setup (setup frame-rate)
      :draw draw/draw-state
      :update update/update-state
      :handler make-handler
