@@ -1,5 +1,6 @@
 (ns kiur.event
   (:require
+   [kiur.keymap :as keymap]
    [kiur.state :as state]))
 
 (defn- -event-type [_state event]  (:type event))
@@ -13,10 +14,13 @@
   [state ev]
   state)
 (defmethod event :key-pressed
-  [state event]
-  (case (:key event)
-    :r (state/default-state)
-    state))
+  [state ev]
+  (let [km (keymap/keymap (-> state :controller :keymap))
+        action (km (:key ev))]
+    (when action (println action))
+    (case action
+      :reset-state (state/default-state)
+      state)))
 (defmethod event :mouse-moved
   [state ev]
   (update-in state [:controller :pointer]
