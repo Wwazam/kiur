@@ -10,7 +10,7 @@
 (defmethod event :mouse-released
   [state _]  state)
 (defmethod event :mouse-wheel
-  [state event]
+  [state ev]
   state)
 (defmethod event :key-pressed
   [state event]
@@ -18,9 +18,9 @@
     :r (state/default-state)
     state))
 (defmethod event :mouse-moved
-  [state event]
+  [state ev]
   (update-in state [:controller :pointer]
-             assoc :x (:x event) :y (:y event)))
+             assoc :x (:x ev) :y (:y ev)))
 (defmethod event :default
-  [state event]
+  [state ev]
   state)
