@@ -4,6 +4,7 @@
    [kiur.event :as event]
    [kiur.state :as state]
    [kiur.update :as update]
+   [quil.applet :as applet]
    [quil.core :as q]
    [quil.middleware :as qm]))
 
@@ -40,3 +41,7 @@
 (comment
   (let [config {:frame-rate 60}]
     (start-app config)))
+
+(comment
+  (when (= 27 (q/key-code))
+    (set! (.key (applet/current-applet)) (char 0))))
