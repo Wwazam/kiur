@@ -21,9 +21,10 @@
                     :s :accelerate-down
                     :d :accelerate-right})
 
-(defn keymap [keyboard]
+(defn- -keymap [keyboard]
   (->> (map vector keyboard qwerty-kb)
-       (reduce (fn [m [k qw-val]] (assoc m k (qwerty-keymap qw-val identity))) {})))
+       (reduce (fn [m [k qw-val]] (assoc m k (qwerty-keymap qw-val))) {})))
+(def ^:function keymap (memoize -keymap))
 
 (s/assert #{:accelerate-up} ((kw \,) (keymap dvorak-kb)))
 (s/assert #{:accelerate-down} ((kw \o) (keymap dvorak-kb)))
