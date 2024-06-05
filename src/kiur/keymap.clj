@@ -2,7 +2,7 @@
   (:require
    [clojure.spec.alpha :as s]))
 
-(defmacro kw [s]
+(defmacro ^:private kw  [s]
   `(keyword (str ~s)))
 
 (defn str->key-list [string]
@@ -19,7 +19,8 @@
 (def qwerty-keymap {:w :accelerate-up
                     :a :accelerate-left
                     :s :accelerate-down
-                    :d :accelerate-right})
+                    :d :accelerate-right
+                    :o :reset-state})
 
 (defn- -keymap [keyboard]
   (->> (map vector keyboard qwerty-kb)
