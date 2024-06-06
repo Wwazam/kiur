@@ -7,11 +7,11 @@
 (defmulti event #'-event-type)
 
 (defmethod event :mouse-pressed
-  [state _]  state)
+  [state _] state)
 (defmethod event :mouse-released
   [state _]  state)
 (defmethod event :mouse-wheel
-  [state ev]
+  [state _]
   state)
 (defmethod event :key-pressed
   [state ev]
