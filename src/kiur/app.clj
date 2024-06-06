@@ -23,6 +23,8 @@
     :mouse-pressed (fn [st ev] (event/event st (assoc ev :type :mouse-pressed)))
     :mouse-released (fn [st ev] (event/event st (assoc ev :type :mouse-released)))
     :key-pressed (fn [st ev]
+                   (when (= 27 (q/key-code))
+                     (set! (.key (applet/current-applet)) (char 0)))
                    (event/event st (assoc ev :type :key-pressed)))
     :key-released (fn [st ev] (event/event st (assoc ev :type :key-released)))
     :features [:resizable]
