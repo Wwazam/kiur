@@ -11,8 +11,8 @@
 (defmethod handle :mouse-released
   [state _]  state)
 (defmethod handle :mouse-wheel
-  [state _]
-  state)
+  [state {:keys [value]}]
+  (update-in state [:player :speed] (fn [speed] (min 10 (max 0 (- speed value))))))
 (defmethod handle :key-pressed
   [state ev]
   (let [km (keymap/keymap (-> state :controller :keymap))
