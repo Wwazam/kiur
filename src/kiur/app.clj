@@ -18,14 +18,14 @@
     :setup setup
     :draw draw/draw-state
     :update update/update-state
-    :mouse-moved (fn [st ev] (event/event st (assoc ev :type :mouse-moved)))
-    :mouse-wheel (fn [st ev]  (event/event st (assoc ev :type :mouse-wheel)))
-    :mouse-pressed (fn [st ev] (event/event st (assoc ev :type :mouse-pressed)))
-    :mouse-released (fn [st ev] (event/event st (assoc ev :type :mouse-released)))
+    :mouse-moved (fn [st ev] (event/handle st (assoc ev :type :mouse-moved)))
+    :mouse-wheel (fn [st ev]  (event/handle st (assoc ev :type :mouse-wheel)))
+    :mouse-pressed (fn [st ev] (event/handle st (assoc ev :type :mouse-pressed)))
+    :mouse-released (fn [st ev] (event/handle st (assoc ev :type :mouse-released)))
     :key-pressed (fn [st ev]
                    (when (= 27 (q/key-code))
                      (set! (.key (applet/current-applet)) (char 0)))
-                   (event/event st (assoc ev :type :key-pressed)))
-    :key-released (fn [st ev] (event/event st (assoc ev :type :key-released)))
+                   (event/handle st (assoc ev :type :key-pressed)))
+    :key-released (fn [st ev] (event/handle st (assoc ev :type :key-released)))
     :features [:resizable]
     :middleware [qm/fun-mode]))

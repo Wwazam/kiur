@@ -4,16 +4,16 @@
    [kiur.state :as state]))
 
 (defn- -event-type [_state event]  (:type event))
-(defmulti event #'-event-type)
+(defmulti handle #'-event-type)
 
-(defmethod event :mouse-pressed
+(defmethod handle :mouse-pressed
   [state _] state)
-(defmethod event :mouse-released
+(defmethod handle :mouse-released
   [state _]  state)
-(defmethod event :mouse-wheel
+(defmethod handle :mouse-wheel
   [state _]
   state)
-(defmethod event :key-pressed
+(defmethod handle :key-pressed
   [state ev]
   (let [km (keymap/keymap (-> state :controller :keymap))
         action (km (:key ev))]
@@ -21,10 +21,10 @@
     (case action
       :reset-state (state/default-state)
       state)))
-(defmethod event :mouse-moved
+(defmethod handle :mouse-moved
   [state ev]
   (update-in state [:controller :pointer]
              assoc :x (:x ev) :y (:y ev)))
-(defmethod event :default
+(defmethod handle :default
   [state ev]
   state)
