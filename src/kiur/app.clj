@@ -19,7 +19,7 @@
     :draw draw/draw-state
     :update update/update-state
     :mouse-moved (fn [st ev] (event/handle st (assoc ev :type :mouse-moved)))
-    :mouse-wheel (fn [st ev]  (event/handle st (assoc ev :type :mouse-wheel)))
+    :mouse-wheel (fn [st ev]  (event/handle st {:type :mouse-wheel :value ev}))
     :mouse-pressed (fn [st ev] (event/handle st (assoc ev :type :mouse-pressed)))
     :mouse-released (fn [st ev] (event/handle st (assoc ev :type :mouse-released)))
     :key-pressed (fn [st ev]
