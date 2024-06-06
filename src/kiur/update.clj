@@ -7,7 +7,7 @@
                     :keys [player]
                     :as state}]
   (if pointer
-    (let [max-speed 1
+    (let [max-speed 7
           deltas (->> [pointer player]
                       (mapv (juxt :x :y))
                       (apply mapv -))
@@ -15,7 +15,9 @@
                      (map #(math/pow % 2))
                      (reduce +)
                      math/sqrt)
-          [displ-x displ-y] (mapv #(/ (* max-speed %) hypot) deltas)]
+          [displ-x displ-y] (if (> 1 hypot)
+                              [0 0]
+                              (mapv #(/ (* (min max-speed hypot) %) hypot) deltas))]
       (-> state
           (update-in [:player :x] + displ-x)
           (update-in [:player :y] + displ-y)))
