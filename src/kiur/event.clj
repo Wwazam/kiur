@@ -24,7 +24,6 @@
   [state ev]
   (let [km (keymap/keymap (-> state :controller :keymap))
         action (km (:key ev))]
-    (when action (println action))
     (case action
       :reset-state (state/default-state)
       state)))
