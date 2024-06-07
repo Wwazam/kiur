@@ -7,7 +7,14 @@
 (defmulti handle #'-event-type)
 
 (defmethod handle :mouse-pressed
-  [state _] state)
+  [state ev]
+  (case (:button ev)
+    :right (update-in state [:player :target]
+                      assoc
+                      :x (:x ev)
+                      :y (:y ev))
+    :left state
+    :center state))
 (defmethod handle :mouse-released
   [state _]  state)
 (defmethod handle :mouse-wheel

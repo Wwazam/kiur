@@ -3,11 +3,11 @@
    [clojure.math :as math]))
 
 (defonce *st (atom nil))
-(defn move-player [{{:keys [pointer]} :controller
+(defn move-player [{{:keys [target]} :player
                     :keys [player]
                     :as state}]
-  (if pointer
-    (let [deltas (->> [pointer player]
+  (if target
+    (let [deltas (->> [target player]
                       (mapv (juxt :x :y))
                       (apply mapv -))
           hypot (->> deltas
