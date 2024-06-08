@@ -1,8 +1,6 @@
-(ns kiur.polygon
-  (:require
-   [clojure.spec.alpha :as s]))
+(ns kiur.polygon)
 
-(defn square [x y w h]
+(defn rect [x y w h]
   (vec (for [dx [0 w]
              dy [0 h]]
          [(+ x dx) (+ y dy)])))
@@ -32,14 +30,21 @@
          (partition 2 1)
          (mapv vec))))
 
-(s/def ::point (s/cat :x number? :y number?))
-(s/def ::vertice (s/cat :p1 (s/spec ::point) :p2 (s/spec ::point)))
-(s/def ::vertices (s/coll-of ::vertice))
-(s/conform ::point [0 0])
-(s/assert ::vertice [[0 0] [0 1]])
-(s/conform ::vertices (poly->vertices [[0 0] [1 0] [1 1]]))
+(defn- inter-y [[x y] [[x1 y1] [x2 y2]]]
+  (and
+   (< (min y1 y2) y)
+   (<= y (max y1 y2))
+   (<= (max x1 x2) x)
+   (let [x-inter (+ (/ (* (- y y1) (- x2 x1))
+                       (- y2 y1))
+                    x1)] (or (= x1 x2)
+                             (<= x x-inter)))))
 
 (defn inside? [poly point]
   (and (axis-aligned-inside? (bounding-box poly) point)
-       ()))
-
+       (->> poly
+            poly->vertices
+            (reduce (fn [crossing vertice]
+                      (cond-> crossing
+                        (inter-y point vertice) not))
+                    false))))
