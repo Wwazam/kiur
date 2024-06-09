@@ -50,3 +50,25 @@
                       (cond-> crossing
                         (inter-y point vertice) not))
                     false))))
+
+(defn- orientation
+  "Find the orientation of an ordered triplet p q r "
+  [[px py] [qx qy] [rx ry]]
+  (let [val (- (* (- qy py) (- rx qx))
+               (* (- qx px) (- ry qy)))]
+    (cond
+      (zero? val) :colinear
+      (> 0 val) :counter-clockwise
+      :else :clockwise)))
+
+(defn convex-hull [poly]
+  (let [leftmost (reduce (fn [[x1 :as left] [x2 :as point]] (if (> x1 x2) point left)) poly)]
+    (loop [points (into (hash-set) poly)
+           [h :as hull] (list leftmost)]
+      (cond
+        (and (< 1 (count hull)) (= h (last hull))) (-> hull rest vec)
+        :else (let [next-point (reduce (fn [q r] (if (= :clockwise (orientation h q r)) r q))
+                                       (first (remove #{h} points))
+                                       points)]
+                (recur (disj points next-point) (conj hull next-point)))))))
+
