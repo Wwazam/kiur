@@ -1,9 +1,10 @@
 (ns kiur.polygon)
 
 (defn rect [x y w h]
-  (vec (for [dx [0 w]
-             dy [0 h]]
-         [(+ x dx) (+ y dy)])))
+  [[x y]
+   [(+ x w) y]
+   [(+ x w) (+ y h)]
+   [x (+ y h)]])
 (defn center [poly]
   (let [{:keys [x y count]} (reduce (fn [m [x y]] (-> m
                                                       (update :x + x)
