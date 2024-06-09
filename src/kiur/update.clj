@@ -2,7 +2,6 @@
   (:require
    [clojure.math :as math]))
 
-(defonce *st (atom nil))
 (defn move-player [{{:keys [target]} :player
                     :keys [player]
                     :as state}]
@@ -23,7 +22,6 @@
     state))
 
 (defn update-state [state]
-  (reset! *st state)
   (-> state
       move-player))
 
