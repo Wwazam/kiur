@@ -1,4 +1,4 @@
-(ns kiur.update
+(ns kiur.app.update
   (:require
    [clojure.math :as math]))
 

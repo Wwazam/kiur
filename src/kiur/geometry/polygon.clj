@@ -1,4 +1,4 @@
-(ns kiur.polygon)
+(ns kiur.geometry.polygon)
 
 (defn rect [x y w h]
   [[x y]

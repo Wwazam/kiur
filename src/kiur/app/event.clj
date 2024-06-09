@@ -1,7 +1,7 @@
-(ns kiur.event
+(ns kiur.app.event
   (:require
-   [kiur.keymap :as keymap]
-   [kiur.state :as state]))
+   [kiur.app.keymap :as keymap]
+   [kiur.app.state :as state]))
 
 (defn- -event-type [_state event]  (:type event))
 (defmulti handle #'-event-type)

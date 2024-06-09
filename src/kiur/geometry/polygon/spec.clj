@@ -1,4 +1,4 @@
-(ns kiur.polygon.spec
+(ns kiur.geometry.polygon.spec
   (:require
    [clojure.spec.alpha :as s]))
 

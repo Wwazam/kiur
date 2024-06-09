@@ -1,10 +1,8 @@
-(ns kiur.draw
+(ns kiur.app.draw
   (:require
-   [quil.core :as q]
-   [kiur.polygon :as poly]))
+   [quil.core :as q]))
 
-(defn- draw-player [{{:keys [x y]} :player
-                     {{px :x py :y} :pointer} :controller}]
+(defn- draw-player [{{:keys [x y]} :player}]
   (q/with-translation [x y]
     (q/ellipse 0 0 20 20)))
 (defn- draw-map [{:keys [map]}]

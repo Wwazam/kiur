@@ -1,4 +1,4 @@
-(ns kiur.keymap
+(ns kiur.app.keymap
   (:require
    [clojure.spec.alpha :as s]))
 

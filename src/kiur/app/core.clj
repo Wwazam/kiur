@@ -1,9 +1,9 @@
-(ns kiur.app
+(ns kiur.app.core
   (:require
-   [kiur.draw :as draw]
-   [kiur.event :as event]
-   [kiur.state :as state]
-   [kiur.update :as update]
+   [kiur.app.draw :as draw]
+   [kiur.app.event :as event]
+   [kiur.app.state :as state]
+   [kiur.app.update :as update]
    [quil.applet :as applet]
    [quil.core :as q]
    [quil.middleware :as qm]))
