@@ -5,6 +5,7 @@
    [(+ x w) y]
    [(+ x w) (+ y h)]
    [x (+ y h)]])
+
 (defn center [poly]
   (let [{:keys [x y count]} (reduce (fn [m [x y]] (-> m
                                                       (update :x + x)
@@ -15,10 +16,10 @@
     (mapv #(/ (double %) count) [x y])))
 (defn bounding-box [poly]
   (reduce (fn [m [x y]] (-> m
-                            (update-in  [0 0] min x)
-                            (update-in  [0 1] min y)
-                            (update-in  [1 0] max x)
-                            (update-in  [1 1] max y)))
+                            (update-in [0 0] min x)
+                            (update-in [0 1] min y)
+                            (update-in [1 0] max x)
+                            (update-in [1 1] max y)))
           [(first poly) (first poly)] poly))
 
 (defn- axis-aligned-inside? [[[x1 y1] [x2 y2]] [x y]]
