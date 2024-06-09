@@ -1,6 +1,6 @@
 (ns kiur.app.update
   (:require
-   [clojure.math :as math]))
+   [kiur.geometry.pythagore :as ptgr]))
 
 (defn move-player [{{:keys [target]} :player
                     :keys [player]
@@ -9,10 +9,7 @@
     (let [deltas (->> [target player]
                       (mapv (juxt :x :y))
                       (apply mapv -))
-          hypot (->> deltas
-                     (map #(math/pow % 2))
-                     (reduce +)
-                     math/sqrt)
+          hypot (apply ptgr/hypotenuse deltas)
           [displ-x displ-y] (if (> 1 hypot)
                               [0 0]
                               (mapv #(/ (* (min (:speed player) hypot) %) hypot) deltas))]
@@ -24,5 +21,4 @@
 (defn update-state [state]
   (-> state
       move-player))
-
 
