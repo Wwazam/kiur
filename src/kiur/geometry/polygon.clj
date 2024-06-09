@@ -26,7 +26,7 @@
   (and (<= x1 x x2)
        (<= y1 y y2)))
 
-(defn- poly->vertices [poly]
+(defn poly->vertices [poly]
   (let [cycled-points (conj poly (first poly))]
     (->> cycled-points
          (partition 2 1)
