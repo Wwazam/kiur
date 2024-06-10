@@ -26,7 +26,7 @@
   (and (<= x1 x x2)
        (<= y1 y y2)))
 
-(defn poly->vertices [poly]
+(defn poly->edges [poly]
   (let [cycled-points (conj poly (first poly))]
     (->> cycled-points
          (partition 2 1)
@@ -45,10 +45,10 @@
 (defn inside? [poly point]
   (and (axis-aligned-inside? (bounding-box poly) point)
        (->> poly
-            poly->vertices
-            (reduce (fn [crossing vertice]
+            poly->edges
+            (reduce (fn [crossing edge]
                       (cond-> crossing
-                        (inter-y point vertice) not))
+                        (inter-y point edge) not))
                     false))))
 
 (defn- orientation
