@@ -36,3 +36,10 @@
            (subject/inside? poly [0.3 1.1])))
     (is (= false
            (subject/inside? poly [-0.1 0.1])))))
+
+(deftest convex-hull-test
+  (let [rect [[0 5] [5 5] [5 0] [0 0]]]
+    (is (= (set rect)
+           (set (subject/convex-hull rect))))
+    (is (= (set rect)
+           (set (subject/convex-hull (conj rect [2.5 2.5])))))))
