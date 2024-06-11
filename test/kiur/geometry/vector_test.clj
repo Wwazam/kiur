@@ -29,13 +29,24 @@
   (is (= [-1 -2] (subject/make-vector [1 2] [0 0])))
   (is (= [15 47] (subject/make-vector [-5 3] [10 50]))))
 
+(defn- round [val prec]
+  (let [mult (math/pow 10 prec)]
+    (double (/ (math/round (* val mult))
+               mult))))
+
 (deftest dot-product-test
   (is (= 0 (subject/dot-product [0 0] [1 1])))
   (is (= 0 (subject/dot-product [0 1] [1 0])))
-  #_(let [vec1 [1 1]
+  (let [a [1 3 -5]
+        b [4 -2 -1]]
+    (is (= 3 (subject/dot-product a b)))
+    (is (= 35 (subject/dot-product a a)))
+    (is (= 21 (subject/dot-product b b))))
+  (testing "Codirectional vectors"
+    (let [vec1 [1 1]
           vec2 [5 5]]
-      (is (= (subject/dot-product vec1 vec2)))
-      (ptgr/hypotenuse vec1)))
+      (is (= (round (reduce * (map subject/magnitude [vec1 vec2])) 2)
+             (double (subject/dot-product vec1 vec2)))))))
 
 (deftest magnitude-test
   (is (= 1.0 (subject/magnitude [0 1])))
