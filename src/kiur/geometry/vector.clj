@@ -1,8 +1,8 @@
 (ns kiur.geometry.vector
   (:require
+   [clojure.math :as math]
    [clojure.spec.alpha :as s]
-   [kiur.geometry.vector.spec :as vspec]
-   [kiur.geometry.pythagore :as ptgr]))
+   [kiur.geometry.vector.spec :as vspec]))
 
 (defn make-vector [point-1 point-2]
   (s/assert ::vspec/point point-1)
@@ -11,7 +11,10 @@
   (mapv - point-2 point-1))
 
 (defn magnitude [vec]
-  (apply ptgr/hypotenuse vec))
+  (->> vec
+       (map #(math/pow % 2))
+       (reduce +)
+       math/sqrt))
 
 (defn normalize [vec]
   (let [m (magnitude vec)]

@@ -1,6 +1,6 @@
 (ns kiur.app.update
   (:require
-   [kiur.geometry.pythagore :as ptgr]))
+   [kiur.geometry.vector :as v]))
 
 (defn move-player [{{:keys [target]} :player
                     :keys [player]
@@ -9,10 +9,10 @@
     (let [deltas (->> [target player]
                       (mapv (juxt :x :y))
                       (apply mapv -))
-          hypot (apply ptgr/hypotenuse deltas)
-          [displ-x displ-y] (if (> 1 hypot)
+          magnitude (v/magnitude deltas)
+          [displ-x displ-y] (if (> 1 magnitude)
                               [0 0]
-                              (mapv #(/ (* (min (:speed player) hypot) %) hypot) deltas))]
+                              (mapv #(/ (* (min (:speed player) magnitude) %) magnitude) deltas))]
       (-> state
           (update-in [:player :x] + displ-x)
           (update-in [:player :y] + displ-y)))
