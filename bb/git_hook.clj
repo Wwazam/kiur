@@ -47,12 +47,15 @@ bb hooks %s" (java.util.Date.) hook))
   #_(when-let [files (changed-files)]
       (apply sh "cljstyle" "fix" (filter clj? files))))
 
+(defn run-tests []
+  (sh "clj" "-M:test"))
+
 (defmethod hooks "pre-push" [& _]
   (println "Running pre-push hook")
   (when (is-main-branch?)
-    (->> (sh "clj" "-M:test")
-         :out println)
-    (println "billy bob")))
+    (let [{:keys [exit out]} (run-tests)]
+      (when (not (zero? exit))
+        (throw (Exception. (format  "Tests are not passing\n%s" out)))))))
 
 (defmethod hooks :default [& args]
   (println "Unknown command:" (first args)))
