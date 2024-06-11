@@ -20,7 +20,6 @@
 
 (defn dot-product [a b]
   (->> [a b]
-       (s/assert (s/coll-of (s/spec ::vspec/vector)))
        (apply map *)
        (reduce +)))
 
