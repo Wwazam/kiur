@@ -1,7 +1,8 @@
 (ns git-hook
-  (:require [babashka.fs :as fs]
-            [clojure.string :as str]
-            [clojure.java.shell :refer [sh]]))
+  (:require
+   [babashka.fs :as fs]
+   [clojure.java.shell :refer [sh]]
+   [clojure.string :as str]))
 
 (defn changed-files []
   (->> (sh "git" "diff" "--name-only" "--cached" "--diff-filter=ACM")
@@ -12,21 +13,18 @@
 
 (def extensions #{"clj" "cljx" "cljc" "cljs" "edn"})
 
-(defn clj?
-  [s]
+(defn clj? [s]
   (when s
     (let [extension (last (str/split s #"\."))]
       (extensions extension))))
 
-(defn hook-text
-  [hook]
+(defn hook-text [hook]
   (format "#!/bin/sh
 # Installed by babashka task on %s
 
 bb hooks %s" (java.util.Date.) hook))
 
-(defn spit-hook
-  [hook]
+(defn spit-hook [hook]
   (println "Installing hook: " hook)
   (let [file (str ".git/hooks/" hook)]
     (spit file (hook-text hook))
@@ -41,12 +39,16 @@ bb hooks %s" (java.util.Date.) hook))
 (defmulti hooks (fn [& args] (first args)))
 
 (defmethod hooks "install" [& _]
-  (spit-hook "pre-commit"))
+  (spit-hook "pre-commit")
+  (spit-hook "pre-push"))
 
 (defmethod hooks "pre-commit" [& _]
   (println "Running pre-commit hook")
-  (when-let [files (changed-files)]
-    (apply sh "cljstyle" "fix" (filter clj? files)))
+  #_(when-let [files (changed-files)]
+      (apply sh "cljstyle" "fix" (filter clj? files))))
+
+(defmethod hooks "pre-push" [& _]
+  (println "Running pre-push hook")
   (when (is-main-branch?)
     (->> (sh "clj" "-M:test")
          :out println)
