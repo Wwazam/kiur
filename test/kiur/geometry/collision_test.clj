@@ -31,3 +31,13 @@
              (subject/overlap [5 6] [5 6])))
       (is (= true
              (subject/overlap [5 6] [2 5]))))))
+
+(deftest collision?-test
+  (let [shape-1 [[13 10] [13 3] [6 3] [6 10]]
+        shape-2 [[14 18] [15 11] [10 13]]
+        shape-3 [[11 10] [11 3] [4 3] [4 10]]
+        shape-4 [[13 13] [8 9] [7 15]]]
+    (is (= false
+           (subject/collision? shape-1 shape-2)))
+    (is (= true
+           (subject/collision? shape-3 shape-4)))))
