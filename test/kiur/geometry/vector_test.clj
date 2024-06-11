@@ -1,7 +1,6 @@
 (ns kiur.geometry.vector-test
   (:require
    [clojure.test :refer [deftest is testing]]
-   [kiur.geometry.pythagore :as ptgr]
    [kiur.geometry.vector :as subject]
    [clojure.math :as math]))
 
@@ -17,7 +16,7 @@
   (is (< (/ -1 10000)
          (->> [(rand-int 10000) (rand-int 10000)]
               subject/normalize
-              (apply ptgr/hypotenuse)
+              subject/magnitude
               dec)
          (/ 1 10000)))
   (testing "With a magnitude of zero"
@@ -54,9 +53,9 @@
   (is (= 3.0 (subject/magnitude [1 1 1 1 1 1 1 1 1]))))
 
 (deftest normal-test
-  (is (= [0 -1]
+  (is (= [0.0 -1.0]
          (subject/normal [1 0])))
-  (is (= [5 -4]
+  (is (= [0.7808688094430304 -0.6246950475544243]
          (subject/normal [4 5])))
-  (is (= [-4 -5]
+  (is (= [-0.6246950475544243 -0.7808688094430304]
          (subject/normal [5 -4]))))

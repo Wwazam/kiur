@@ -22,7 +22,6 @@
       (not (zero? m)) (mapv #(/ % m)))))
 
 (defn normal [[x y :as vect]]
-  (s/assert ::vspec/vector vect)
   (normalize [y (- x)]))
 
 (defn dot-product [a b]
