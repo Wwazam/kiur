@@ -33,6 +33,11 @@ bb hooks %s" (java.util.Date.) hook))
     (fs/set-posix-file-permissions file "rwx------")
     (assert (fs/executable? file))))
 
+(defn is-main-branch? []
+  (->> (sh "git" "branch" "--show-current")
+       :out str/trim
+       (= "main")))
+
 (defmulti hooks (fn [& args] (first args)))
 
 (defmethod hooks "install" [& _]
@@ -41,7 +46,11 @@ bb hooks %s" (java.util.Date.) hook))
 (defmethod hooks "pre-commit" [& _]
   (println "Running pre-commit hook")
   (when-let [files (changed-files)]
-    (apply sh "cljstyle" "fix" (filter clj? files))))
+    (apply sh "cljstyle" "fix" (filter clj? files)))
+  (when (is-main-branch?)
+    (->> (sh "clj" "-M:test")
+         :out println)
+    (println "billy bob")))
 
 (defmethod hooks :default [& args]
   (println "Unknown command:" (first args)))
