@@ -2,8 +2,8 @@
   (:require
    [clojure.math :as math]))
 
-(defn hypotenuse [& points]
-  (->> points
+(defn hypotenuse [& lengths]
+  (->> lengths
        (map #(math/pow % 2))
        (reduce +)
        math/sqrt))

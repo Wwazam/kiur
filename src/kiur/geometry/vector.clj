@@ -10,13 +10,17 @@
   (s/assert (fn points-have-same-dimension [points] (reduce = points)) (map count [point-1 point-2]))
   (mapv - point-2 point-1))
 
-(defn perpendicular [[x y :as vect]]
+(defn normal [[x y :as vect]]
   (s/assert ::vspec/vector vect)
   [y (- x)])
 
+(defn magnitude [vec]
+  (apply ptgr/hypotenuse vec))
+
 (defn normalize [vec]
-  (let [h (apply ptgr/hypotenuse vec)]
-    (mapv #(/ % h) vec)))
+  (let [m (magnitude vec)]
+    (cond->> vec
+      (not (zero? m)) (mapv #(/ % m)))))
 
 (defn dot-product [a b]
   (->> [a b]

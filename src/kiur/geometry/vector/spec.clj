@@ -4,4 +4,5 @@
 
 (s/def ::coord number?)
 (s/def ::point (s/coll-of (s/spec ::coord)))
-(s/def ::vector (s/coll-of (s/spec ::point)))
+(s/def ::vector (s/or :list-of-points (s/coll-of (s/spec ::point))
+                      :x-y (s/coll-of (s/spec ::coord))))

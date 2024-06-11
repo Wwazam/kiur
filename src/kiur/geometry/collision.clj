@@ -7,7 +7,7 @@
   (let [[x1 y1] a
         [x2 y2] b
         normal [(- y1 y2) (- x2 x1)]
-        magnitude (apply ptgr/hypotenuse normal)]
+        magnitude (vector/magnitude normal)]
     (cond->> normal
       (not (zero? magnitude)) (mapv #(/ % magnitude)))))
 
@@ -20,8 +20,10 @@
 
 (defn overlap [[min1 max1] [min2 max2]]
   [(- min1 max2) (- min2 max1)])
+
 (defn add-offset-to-1st [offset [a b]]
   [(update a 1 + offset) b])
+
 (let [triangle-1 [[50 0] [20 100] [150 150]]
       shape-1 [[50 80]  [20 150] [180 250] [180 210]]
       triangle-2 [[250 0] [220 100] [350 150]]
