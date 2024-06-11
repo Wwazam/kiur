@@ -9,8 +9,9 @@
           [##Inf ##-Inf]
           points))
 
-(defn overlap [[min1 max1] [min2 max2]]
-  [(- min1 max2) (- min2 max1)])
+(defn overlap [[min1 max1 :as a] [min2 max2 :as b]]
+  (or (<= min1 min2 max1)
+      (<= min2 min1 max2)))
 
 (defn add-offset-to-1st [offset [a b]]
   [(update a 1 + offset) b])
