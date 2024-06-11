@@ -1,15 +1,6 @@
 (ns kiur.geometry.collision
   (:require
-   [kiur.geometry.pythagore :as ptgr]
    [kiur.geometry.vector :as vector]))
-
-(defn normal-vector [a b]
-  (let [[x1 y1] a
-        [x2 y2] b
-        normal [(- y1 y2) (- x2 x1)]
-        magnitude (vector/magnitude normal)]
-    (cond->> normal
-      (not (zero? magnitude)) (mapv #(/ % magnitude)))))
 
 (defn project [axis points]
   (reduce (fn [[mn mx] point]
