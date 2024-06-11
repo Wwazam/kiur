@@ -32,5 +32,5 @@
   (update-in state [:controller :pointer]
              assoc :x (:x ev) :y (:y ev)))
 (defmethod handle :default
-  [state ev]
+  [state _]
   state)
