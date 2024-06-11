@@ -44,13 +44,14 @@
                              (<= x x-inter)))))
 
 (defn inside? [poly point]
-  (and (axis-aligned-inside? (bounding-box poly) point)
-       (->> poly
-            poly->edges
-            (reduce (fn [crossing edge]
-                      (cond-> crossing
-                        (inter-y point edge) not))
-                    false))))
+  (or (some? (get (set poly) point))
+      (and (axis-aligned-inside? (bounding-box poly) point)
+           (->> poly
+                poly->edges
+                (reduce (fn [crossing edge]
+                          (cond-> crossing
+                            (inter-y point edge) not))
+                        false)))))
 
 (defn- orientation
   "Find the orientation of an ordered triplet p q r "
