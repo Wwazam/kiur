@@ -54,4 +54,9 @@
   (is (= 3.0 (subject/magnitude [1 1 1 1 1 1 1 1 1]))))
 
 (deftest normal-test
-  (is (= 1 1)))
+  (is (= [0 -1]
+         (subject/normal [1 0])))
+  (is (= [5 -4]
+         (subject/normal [4 5])))
+  (is (= [-4 -5]
+         (subject/normal [5 -4]))))
