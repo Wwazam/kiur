@@ -59,3 +59,5 @@
          (subject/normal [4 5])))
   (is (= [-0.6246950475544243 -0.7808688094430304]
          (subject/normal [5 -4]))))
+(deftest failing-test
+  (is (= 0 1)))
