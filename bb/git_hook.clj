@@ -47,11 +47,21 @@ bb hooks %s" (java.util.Date.) hook))
 (defmulti hooks (fn [& args] (first args)))
 
 (defmethod hooks "sync" [& _]
-  (doseq [hook (->> "bb.edn" slurp edn/read-string :project :git-hooks)]
+  (hooks "remove-unmanaged")
+  (hooks "install"))
+
+(defmethod hooks "list"
+  [& _]
+  (->> "bb.edn" slurp edn/read-string :project :git-hooks))
+(defmethod hooks "install"
+  [& _]
+  (doseq [hook (hooks "list")]
     (if (valid-hooks hook)
       (spit-hook hook)
       (throw (Error. (format "Invalid hook: %s" hook))))))
-
+(defmethod hooks "remove-unmanaged" [& _]
+  (doseq [hook (remove (set (hooks "list")) (installed-hooks))]
+    (fs/delete (format ".git/hooks/%s" hook))))
 (defn run-tests []
   (sh "clj" "-M:test"))
 
