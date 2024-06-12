@@ -1,8 +1,11 @@
 (ns git-hook
   (:require
    [babashka.fs :as fs]
+   [clojure.edn :as edn]
    [clojure.java.shell :refer [sh]]
    [clojure.string :as str]))
+
+(def valid-hooks #{"applypatch-msg" "pre-applypatch" "post-applypatch" "pre-commit" "prepare-commit-msg" "commit-msg" "post-commit" "pre-rebase" "post-checkout" "post-merge" "pre-push" "pre-receive" "update" "post-receive" "post-update" "push-to-checkout" "pre-auto-gc" "post-rewrite" "rebase" "sendemail-validate" "fsmonitor-watchman" "p4-pre-submit"})
 
 (defn changed-files []
   (->> (sh "git" "diff" "--name-only" "--cached" "--diff-filter=ACM")
@@ -36,11 +39,18 @@ bb hooks %s" (java.util.Date.) hook))
        :out str/trim
        (= "main")))
 
+(defn installed-hooks []
+  (->> (sh "ls" ".git/hooks/")
+       :out str/split-lines
+       (remove #(re-find #"sample" %))))
+
 (defmulti hooks (fn [& args] (first args)))
 
-(defmethod hooks "install" [& _]
-  (spit-hook "pre-commit")
-  (spit-hook "pre-push"))
+(defmethod hooks "sync" [& _]
+  (doseq [hook (->> "bb.edn" slurp edn/read-string :project :git-hooks)]
+    (if (valid-hooks hook)
+      (spit-hook hook)
+      (throw (Error. (format "Invalid hook: %s" hook))))))
 
 (defn run-tests []
   (sh "clj" "-M:test"))

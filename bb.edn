@@ -2,4 +2,5 @@
  :tasks
  {hooks {:doc "Hook related commands"
          :requires ([git-hook :as gh])
-         :task (apply gh/hooks *command-line-args*)}}}
+         :task (apply gh/hooks *command-line-args*)}}
+ :project {:git-hooks []}}
