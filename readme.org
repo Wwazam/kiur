@@ -1,0 +1,36 @@
+#+title: Kiur
+
+* What's up
+An Old pen and paper game idea I had as a kid
+
+It's slowly (meaning /day 1/) evolving into a =2d engine=, a =project manager= (with babashka)
+
+
+* Running the app
+
+For now, it's mostly in =kiur.core/-main=, and you can move around with =right click=
+
+#+begin_src sh :results none
+clj -M -m kiur.core
+#+end_src
+
+* Tests
+#+begin_src sh :results drawer
+clj -M:test
+#+end_src
+
+#+RESULTS:
+:results:
+"Elapsed time: 1.981205 msecs"
+
+Running tests in #{"test"}
+
+Testing kiur.geometry.collision-test
+
+Testing kiur.geometry.polygon-test
+
+Testing kiur.geometry.vector-test
+
+Ran 12 tests containing 46 assertions.
+0 failures, 0 errors.
+:end:
