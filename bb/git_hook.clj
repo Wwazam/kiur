@@ -42,20 +42,20 @@ bb hooks %s" (java.util.Date.) hook))
   (spit-hook "pre-commit")
   (spit-hook "pre-push"))
 
-(defmethod hooks "pre-commit" [& _]
-  (println "Running pre-commit hook")
-  #_(when-let [files (changed-files)]
-      (apply sh "cljstyle" "fix" (filter clj? files))))
-
 (defn run-tests []
   (sh "clj" "-M:test"))
 
-(defmethod hooks "pre-push" [& _]
-  (println "Running pre-push hook")
+(defmethod hooks "pre-commit" [& _]
+  (println "Running pre-commit hook")
   (when (is-main-branch?)
     (let [{:keys [exit out]} (run-tests)]
       (when (not (zero? exit))
-        (throw (Exception. (format  "Tests are not passing\n%s" out)))))))
+        (throw (Exception. (format  "Tests are not passing\n%s" out))))))
+  #_(when-let [files (changed-files)]
+      (apply sh "cljstyle" "fix" (filter clj? files))))
+
+(defmethod hooks "pre-push" [& _]
+  (println "Running pre-push hook"))
 
 (defmethod hooks :default [& args]
   (println "Unknown command:" (first args)))
