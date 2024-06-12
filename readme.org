@@ -15,13 +15,13 @@ clj -M -m kiur.core
 #+end_src
 
 * Tests
-#+begin_src sh :results drawer
+#+begin_src sh :results pp
 clj -M:test
 #+end_src
 
 #+RESULTS:
-:results:
-"Elapsed time: 1.981205 msecs"
+#+begin_example
+"Elapsed time: 1.60328 msecs"
 
 Running tests in #{"test"}
 
@@ -33,4 +33,4 @@ Testing kiur.geometry.vector-test
 
 Ran 12 tests containing 46 assertions.
 0 failures, 0 errors.
-:end:
+#+end_example
