@@ -17,9 +17,12 @@
 (defn collision? [a b]
   (->> [a b]
        (mapcat p/poly->edges)
-       (map #(apply vector/make-vector %))
-       (map (fn overlap-on-projection? [edge]
-              (->> [a b]
-                   (map #(project (vector/normal edge) %))
-                   (apply overlap?))))
-       (not-any? not)))
+       (map #(->> (apply vector/make-vector %)
+                  vector/normal))
+       (reduce (fn [_ edge]
+                 (if (->> [a b]
+                          (map #(project edge %))
+                          (apply overlap?))
+                   true
+                   (reduced false)))
+               [##Inf ##Inf])))
