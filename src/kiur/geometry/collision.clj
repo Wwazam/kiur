@@ -14,9 +14,6 @@
   (or (<= min1 min2 max1)
       (<= min2 min1 max2)))
 
-(defn add-offset-to-1st [offset [a b]]
-  [(update a 1 + offset) b])
-
 (defn collision? [a b]
   (->> [a b]
        (mapcat p/poly->edges)
