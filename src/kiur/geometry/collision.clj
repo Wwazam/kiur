@@ -10,7 +10,7 @@
           [##Inf ##-Inf]
           points))
 
-(defn overlap [[min1 max1 :as a] [min2 max2 :as b]]
+(defn overlap? [[min1 max1 :as a] [min2 max2 :as b]]
   (or (<= min1 min2 max1)
       (<= min2 min1 max2)))
 
@@ -24,5 +24,5 @@
        (map (fn overlap-on-projection? [edge]
               (->> [a b]
                    (map #(project (vector/normal edge) %))
-                   (apply overlap))))
+                   (apply overlap?))))
        (not-any? not)))
