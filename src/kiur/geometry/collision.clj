@@ -20,9 +20,9 @@
 (defn collision? [a b]
   (->> [a b]
        (mapcat p/poly->edges)
-       (mapv #(apply vector/make-vector %))
-       (mapv (fn overlap-on-projection? [edge]
-               (->> [a b]
-                    (mapv #(project (vector/normal edge) %))
-                    (apply overlap))))
+       (map #(apply vector/make-vector %))
+       (map (fn overlap-on-projection? [edge]
+              (->> [a b]
+                   (map #(project (vector/normal edge) %))
+                   (apply overlap))))
        (not-any? not)))
