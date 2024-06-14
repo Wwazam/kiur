@@ -29,4 +29,5 @@
                    (event/handle st (assoc ev :type :key-pressed)))
     :key-released (fn [st ev] (event/handle st (assoc ev :type :key-released)))
     :features [:resizable]
-    :middleware [qm/fun-mode]))
+    :middleware [qm/fun-mode])
+  kiur)
