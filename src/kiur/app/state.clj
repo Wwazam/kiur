@@ -3,7 +3,7 @@
    [kiur.app.keymap :as keymap]))
 
 (defn default-state  []
-  {:player {:x 100 :y 100 :speed 3}
+  {:player {:x 100 :y 100 :speed 3 :r 20}
    :controller {:direction #{}
                 :keymap keymap/dvorak-kb}
    :map [{:type :poly :points [[50 0] [20 100] [150 150]] :color [23 94 140]}
