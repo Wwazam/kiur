@@ -1,10 +1,9 @@
 (ns kiur.pathfinding
   (:require
+   [clojure.math :as math]
    [kiur.app.state :as state]
-   [kiur.app.core :as app]
-   [quil.applet :as applet]
-   [kiur.geometry.vector :as v]
-   [clojure.math :as math]))
+   [kiur.geometry.polygon :as poly]
+   [kiur.geometry.vector :as v]))
 
 (defn octogone [x y r]
   (mapv #(->> %
@@ -26,29 +25,43 @@
   (let [val (cost-map coord)]
     (or (nil? val) (< cost val))))
 
+(defn valid? [bounding-box point]
+  (poly/inside? bounding-box point))
 (defn make-next-points [{:keys [coord heur cost]} step]
   (->> (neighbors coord step)
        (map (fn [new-coord] {:coord new-coord
                              :cost (+ cost (get-cost  coord new-coord))
                              :coming-from coord}))))
 
-(let [target (mapv double [400 400])
-      player {:x 100, :y 100, :speed 3, :r 5}
-      radius (:r player)
-      step (/ radius 2.)
-      init-pos ((juxt :x :y) player)
-      queue [{:heur (get-cost target init-pos)
-              :cost 0
-              :coord init-pos}]]
-  (loop [[{:keys [heur coord] :as nxt} & queue] queue
-         cost-map {}]
-    (cond
-      (nil? coord) cost-map
+(defn cost-map [{:keys [player]} target]
+  (let [step (/ (:r player) 2.0)
+        target (mapv double target)
+        init-pos ((juxt :x :y) player)
+        queue [{:heur (get-cost target init-pos)
+                :cost 0
+                :coord init-pos}]]
+    (loop [[{:keys [heur coord] :as nxt} & queue] queue
+           cost-map {}]
+      (cond
+        (nil? coord) cost-map
 
-      (< 1000 (count cost-map)) cost-map
+        (< 1000 (count cost-map)) cost-map
 
-      (cost-map target) cost-map
+        (cost-map target) cost-map
 
-      (better-path? cost-map nxt) (recur (into queue (make-next-points nxt step)) (assoc cost-map coord nxt))
+        (better-path? cost-map nxt) (recur (into queue (make-next-points nxt step)) (assoc cost-map coord nxt))
 
-      :else (recur queue cost-map))))
+        :else (recur queue cost-map)))))
+
+(comment (let [state (state/default-state)
+               target [200 200]
+               target (mapv double target)
+               cm (cost-map state target)
+
+               start-pos ((juxt :x :y) (:player state))]
+           (loop [t target
+                  path []]
+             (let [{:keys [coord coming-from]} (get cm t)]
+               (cond
+                 (= coord start-pos) path
+                 :else (recur coming-from (conj path t)))))))
