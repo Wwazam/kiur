@@ -33,15 +33,19 @@
          (partition 2 1)
          (mapv vec))))
 
-(defn- inter-y [[x y] [[x1 y1] [x2 y2]]]
+(defn inter-y
+  "Return true if the horizontal ray starting from [x y] to [+Inf y]
+  intersects the line segment"
+  [[x y] [[x1 y1] [x2 y2]]]
   (and
    (< (min y1 y2) y)
    (<= y (max y1 y2))
-   (<= (max x1 x2) x)
+   (<= x (max x1 x2))
    (let [x-inter (+ (/ (* (- y y1) (- x2 x1))
                        (- y2 y1))
-                    x1)] (or (= x1 x2)
-                             (<= x x-inter)))))
+                    x1)]
+     (or (= x1 x2)
+         (<= x x-inter)))))
 
 (defn inside? [poly point]
   (or (some? (get (set poly) point))
