@@ -27,11 +27,14 @@
 
 (defn valid? [bounding-box point]
   (poly/inside? bounding-box point))
-(defn make-next-points [{:keys [coord heur cost]} step]
+(defrecord Node [coord heuristic cost coming-from])
+
+(defn make-next-points [{:keys [coord cost]} target step]
   (->> (neighbors coord step)
-       (map (fn [new-coord] {:coord new-coord
-                             :cost (+ cost (get-cost  coord new-coord))
-                             :coming-from coord}))))
+       (map (fn [new-coord] (->Node new-coord
+                                    (get-cost new-coord target)
+                                    (+ cost (get-cost coord new-coord))
+                                    coord)))))
 
 (defn cost-map [{:keys [player]} target]
   (let [step (/ (:r player) 2.0)
@@ -44,6 +47,7 @@
            cost-map {}]
       (cond
         (nil? coord) cost-map
+        root-node (->Node init-pos (get-cost target init-pos) 0 nil)
 
         (< 1000 (count cost-map)) cost-map
 
