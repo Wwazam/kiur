@@ -1,19 +1,20 @@
 (ns kiur.pathfinding
   (:require
    [clojure.math :as math]
-   [kiur.app.state :as state]
    [kiur.geometry.polygon :as poly]
    [kiur.geometry.vector :as v]))
 
-(defn octogone [x y r]
+(defn octogone [[x y] r]
   (mapv #(->> %
               (mapv (fn [coord delta] (+ (* delta r) coord)) [x y]))
         [[-1 0] [-2/3 -2/3] [0 -1] [2/3 -2/3] [1 0] [2/3 2/3] [0 1] [-2/3 2/3] [-1 0]]))
 
-(defn get-cost [target point]
+(defn calc-cost [target point]
   (->> (v/make-vector target point)
        (mapv #(math/pow % 2))
        (reduce +)))
+(defn total-cost [{:keys [heuristic cost]}]
+  (+ heuristic cost))
 (defn neighbors [point step]
   (for [i (range -1 2)
         j (range -1 2)
@@ -32,40 +33,44 @@
 (defn make-next-points [{:keys [coord cost]} target step]
   (->> (neighbors coord step)
        (map (fn [new-coord] (->Node new-coord
-                                    (get-cost new-coord target)
-                                    (+ cost (get-cost coord new-coord))
+                                    (calc-cost new-coord target)
+                                    (+ cost (calc-cost coord new-coord))
                                     coord)))))
+(defn make-queue [& vals]
+  (apply sorted-set-by (fn [& args] (->> args (map total-cost) (reduce compare)))  vals))
+(defn pop-queue [q]
+  (let [a (first q)]
+    [a (disj q a)]))
 
 (defn cost-map [{:keys [player]} target]
   (let [step (/ (:r player) 2.0)
         target (mapv double target)
         init-pos ((juxt :x :y) player)
-        queue [{:heur (get-cost target init-pos)
-                :cost 0
-                :coord init-pos}]]
-    (loop [[{:keys [heur coord] :as nxt} & queue] queue
-           cost-map {}]
-      (cond
-        (nil? coord) cost-map
-        root-node (->Node init-pos (get-cost target init-pos) 0 nil)
+        root-node (->Node init-pos (calc-cost target init-pos) 0 nil)
+        queue (make-queue root-node)]
+    (loop [queue queue
+           result {}]
+      (let [[{:keys [coord] :as nxt} queue] (pop-queue queue)]
+        (cond
+          (nil? coord) result
 
-        (< 1000 (count cost-map)) cost-map
+          ;; TODO compare nxt to target and return (assoc result target nxt)
+          ;; Faire gaffe aux cost et tout (add-node function ?)
+          (poly/inside? (octogone coord (:r player)) target) (assoc result target nxt)
 
-        (cost-map target) cost-map
+          (better-path? result nxt) (recur (into queue (make-next-points nxt target step)) (assoc result coord nxt))
 
-        (better-path? cost-map nxt) (recur (into queue (make-next-points nxt step)) (assoc cost-map coord nxt))
+          :else (recur queue result))))))
 
-        :else (recur queue cost-map)))))
+(defn astar [state target]
+  (let [target (mapv double target)
+        cm (cost-map state target)
 
-(comment (let [state (state/default-state)
-               target [200 200]
-               target (mapv double target)
-               cm (cost-map state target)
+        start-pos ((juxt :x :y) (:player state))]
+    (loop [t target
+           path []]
+      (let [{:keys [coord coming-from]} (get cm t)]
+        (cond
+          (= coord start-pos) path
+          :else (recur coming-from (conj path t)))))))
 
-               start-pos ((juxt :x :y) (:player state))]
-           (loop [t target
-                  path []]
-             (let [{:keys [coord coming-from]} (get cm t)]
-               (cond
-                 (= coord start-pos) path
-                 :else (recur coming-from (conj path t)))))))
