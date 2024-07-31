@@ -30,12 +30,14 @@
   (poly/inside? bounding-box point))
 (defrecord Node [coord heuristic cost coming-from])
 
-(defn make-next-points [{:keys [coord cost]} target step]
+(defn node-maker [{:keys [coord  cost]} target]
+  (fn [new-coord] (->Node new-coord
+                          (calc-cost new-coord target)
+                          (+ cost (calc-cost coord new-coord))
+                          coord)))
+(defn make-next-points [{:keys [coord] :as origin} target step]
   (->> (neighbors coord step)
-       (map (fn [new-coord] (->Node new-coord
-                                    (calc-cost new-coord target)
-                                    (+ cost (calc-cost coord new-coord))
-                                    coord)))))
+       (map (node-maker origin target))))
 (defn make-queue [& vals]
   (apply sorted-set-by (fn [& args] (->> args (map total-cost) (reduce compare)))  vals))
 (defn pop-queue [q]
@@ -52,25 +54,30 @@
            result {}]
       (let [[{:keys [coord] :as nxt} queue] (pop-queue queue)]
         (cond
-          (nil? coord) result
+          (nil? coord)
+          result
 
-          ;; TODO compare nxt to target and return (assoc result target nxt)
-          ;; Faire gaffe aux cost et tout (add-node function ?)
-          (poly/inside? (octogone coord (:r player)) target) (assoc result target nxt)
+          (= coord target)
+          (assoc result coord nxt)
 
-          (better-path? result nxt) (recur (into queue (make-next-points nxt target step)) (assoc result coord nxt))
+          (poly/inside? (octogone coord (:r player)) target)
+          (recur (conj queue ((node-maker nxt target) target)) (assoc result coord nxt))
 
-          :else (recur queue result))))))
+          (better-path? result nxt)
+          (recur (into queue (make-next-points nxt target step)) (assoc result coord nxt))
+
+          :else
+          (recur queue result))))))
 
 (defn astar [state target]
   (let [target (mapv double target)
         cm (cost-map state target)
-
         start-pos ((juxt :x :y) (:player state))]
     (loop [t target
-           path []]
+           path ()]
       (let [{:keys [coord coming-from]} (get cm t)]
         (cond
-          (= coord start-pos) path
+          (nil? coord) :no-path
+          (= coord start-pos) (vec path)
           :else (recur coming-from (conj path t)))))))
 
