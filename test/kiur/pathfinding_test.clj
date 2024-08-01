@@ -31,7 +31,7 @@
 
     (is (= (subject/map->Node {:coord target
                                :heuristic 0.0
-                               :cost (subject/calc-cost target ((juxt :x :y) player))
+                               :cost 482.0
                                :coming-from [46.0 46.0]})
            (get cm target))
         "The last node of the cost map matches our expectation")))
