@@ -4,11 +4,6 @@
    [kiur.geometry.polygon :as poly]
    [kiur.geometry.vector :as v]))
 
-(defn octogone [[x y] r]
-  (mapv #(->> %
-              (mapv (fn [coord delta] (+ (* delta r) coord)) [x y]))
-        [[-1 0] [-2/3 -2/3] [0 -1] [2/3 -2/3] [1 0] [2/3 2/3] [0 1] [-2/3 2/3] [-1 0]]))
-
 (defn calc-cost [target point]
   (->> (v/make-vector target point)
        (mapv #(math/pow % 2))
@@ -60,7 +55,7 @@
           (= coord target)
           (assoc result coord nxt)
 
-          (poly/inside? (octogone coord (:r player)) target)
+          (poly/inside? (poly/octogone coord (:r player)) target)
           (recur (conj queue ((node-maker nxt target) target)) (assoc result coord nxt))
 
           (better-path? result nxt)

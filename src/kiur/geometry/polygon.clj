@@ -6,6 +6,11 @@
    [(+ x w) (+ y h)]
    [x (+ y h)]])
 
+(defn octogone [[x y] r]
+  (mapv #(->> %
+              (mapv (fn [coord delta] (+ (* delta r) coord)) [x y]))
+        [[-1 0] [-2/3 -2/3] [0 -1] [2/3 -2/3] [1 0] [2/3 2/3] [0 1] [-2/3 2/3] [-1 0]]))
+
 (defn center [poly]
   (let [{:keys [x y count]} (reduce (fn [m [x y]] (-> m
                                                       (update :x + x)

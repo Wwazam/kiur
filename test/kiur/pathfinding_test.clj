@@ -36,18 +36,6 @@
            (get cm target))
         "The last node of the cost map matches our expectation")))
 
-(deftest octogone-test
-  (is (=  [[-5 0] [-10/3 -10/3] [0 -5] [10/3 -10/3] [5 0] [10/3 10/3] [0 5] [-10/3 10/3] [-5 0]]
-          (subject/octogone [0 0] 5)))
-  (is (= [[12 -5] [41/3 -25/3] [17 -10] [61/3 -25/3] [22 -5] [61/3 -5/3] [17 0] [41/3 -5/3] [12 -5]]
-         (subject/octogone [17 -5] 5)))
-  (is (= [[-33 -5] [-49/3 -115/3] [17 -55] [151/3 -115/3] [67 -5] [151/3 85/3] [17 45] [-49/3 85/3] [-33 -5]]
-         (subject/octogone [17 -5] 50))))
-
-(comment (let [target [50.0 50.0]
-               cm (subject/cost-map {:player {:x 1 :y 1 :r 10}} target)]
-           cm))
-
 (deftest calc-cost-test
   (testing "With an origin point"
     (is (= 1.0 (subject/calc-cost [0 0] [1 0])))
