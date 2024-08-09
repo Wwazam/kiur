@@ -20,5 +20,4 @@
 
 (defn update-state [state]
   (-> state
-      move-player))
-
+      #_move-player))
