@@ -2,7 +2,8 @@
   (:require
    [clojure.test :refer [deftest is testing]]
    [kiur.pathfinding :as subject]
-   [clojure.math :as math]))
+   [clojure.math :as math]
+   [kiur.geometry.polygon :as poly]))
 
 (deftest neighbors-test
   (is (= [[-1 -1] [-1 0] [-1 1] [0 -1] [0 1] [1 -1] [1 0] [1 1]]
@@ -46,6 +47,16 @@
     (is (= 522.0 (subject/calc-cost [10 -20] [1 1])))
     (is (= (->> [11.1 8.3] (mapv #(math/pow % 2)) (reduce +) int)
            (int (subject/calc-cost [-50.9 10.4] [-39.8 2.1]))))))
+
+(deftest valid?-test
+  (let [player-sprite (poly/octogone [0 0] 5)]
+    (is (= true (subject/valid?
+                 [{:type :rect :points [[0 15] [50 5] [50 25] [0 25]]}]
+                 player-sprite)))
+    (is (= false (subject/valid?
+                  [{:type :rect :points [[0 5] [50 5] [50 25] [0 25]]}]
+                  player-sprite)))))
+
 (deftest better-path?-test
   (let [cm {[8 43] {:coord [8 43] :heuristic 272306.0 :cost 0 :coming-from nil}
             [18.0 33.0] {:coord [18.0 33.0] :heuristic 264626.0 :cost 200.0 :coming-from [8 43]}
