@@ -46,3 +46,11 @@
     (is (= 522.0 (subject/calc-cost [10 -20] [1 1])))
     (is (= (->> [11.1 8.3] (mapv #(math/pow % 2)) (reduce +) int)
            (int (subject/calc-cost [-50.9 10.4] [-39.8 2.1]))))))
+(deftest better-path?-test
+  (let [cm {[8 43] {:coord [8 43] :heuristic 272306.0 :cost 0 :coming-from nil}
+            [18.0 33.0] {:coord [18.0 33.0] :heuristic 264626.0 :cost 200.0 :coming-from [8 43]}
+            [18.0 23.0] {:coord [18.0 23.0] :heuristic 267226.0 :cost 300.0 :coming-from [18.0 33.0]}}
+        bad-node {:coord [18.0 33.0] :heuristic 264626.0 :cost 400.0 :coming-from [18.0 23.0]}
+        good-node {:coord [18.0 33.0] :heuristic 264626.0 :cost 100.0 :coming-from [18.0 23.0]}]
+    (is (= false (subject/better-path? cm bad-node)))
+    (is (= true (subject/better-path? cm good-node)))))

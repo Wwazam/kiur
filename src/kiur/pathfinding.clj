@@ -18,8 +18,9 @@
     (->> [i j]
          (mapv #(* step %))
          (mapv + point))))
+
 (defn better-path? [cost-map {:keys [coord cost]}]
-  (let [val (cost-map coord)]
+  (let [val (some-> coord cost-map :cost)]
     (or (nil? val) (< cost val))))
 
 (defrecord Node [coord heuristic cost coming-from])
