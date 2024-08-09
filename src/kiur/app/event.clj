@@ -1,7 +1,9 @@
 (ns kiur.app.event
   (:require
    [kiur.app.keymap :as keymap]
-   [kiur.app.state :as state]))
+   [kiur.app.state :as state]
+   [kiur.model.player :as player]
+   [kiur.pathfinding :as pf]))
 
 (defn- -event-type [_state event]  (:type event))
 (defmulti handle #'-event-type)
@@ -9,11 +11,8 @@
 (defmethod handle :mouse-pressed
   [state ev]
   (case (:button ev)
-    :right (update-in state [:player :target]
-                      assoc
-                      :x (:x ev)
-                      :y (:y ev))
-    :left state
+    :right (-> state (update :player player/update-target ev) pf/update-path)
+    :left (-> state (update :player player/update-pos ev) pf/update-path)
     :center state))
 (defmethod handle :mouse-released
   [state _]  state)

@@ -82,3 +82,6 @@
           (= coord start-pos) (vec path)
           :else (recur coming-from (conj path t)))))))
 
+(defn update-path [state]
+  (assoc-in state [:player :path] (astar state (->> state :player :target ((juxt :x :y))))))
+
