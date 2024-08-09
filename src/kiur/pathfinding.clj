@@ -1,6 +1,7 @@
 (ns kiur.pathfinding
   (:require
    [clojure.math :as math]
+   [kiur.geometry.collision :as coll]
    [kiur.geometry.polygon :as poly]
    [kiur.geometry.vector :as v]))
 
@@ -21,9 +22,10 @@
   (let [val (cost-map coord)]
     (or (nil? val) (< cost val))))
 
-(defn valid? [bounding-box point]
-  (poly/inside? bounding-box point))
 (defrecord Node [coord heuristic cost coming-from])
+
+(defn valid? [m poly]
+  (not-any? #(coll/collision? poly (:points %)) m))
 
 (defn node-maker [{:keys [coord  cost]} target]
   (fn [new-coord] (->Node new-coord
@@ -39,7 +41,7 @@
   (let [a (first q)]
     [a (disj q a)]))
 
-(defn cost-map [{:keys [player]} target]
+(defn cost-map [{:keys [player] :as state} target]
   (let [step (/ (:r player) 2.0)
         target (mapv double target)
         init-pos ((juxt :x :y) player)
@@ -51,6 +53,9 @@
         (cond
           (nil? coord)
           result
+
+          (not (valid? (:map state) (poly/octogone coord (:r player))))
+          (recur queue result)
 
           (= coord target)
           (assoc result coord nxt)
