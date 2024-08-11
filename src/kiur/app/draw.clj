@@ -24,9 +24,16 @@
             points)
       (q/end-shape))))
 
+(defn draw-path [{{:keys [path]} :player}]
+  (when path
+    (q/with-fill (q/color 150 150 0)
+      (doseq [[a b] (partition 2 1 path)]
+        (q/line a b)))))
+
 (defn- draw-map [{:keys [map]}]
   (mapv draw-shape map))
 (defn draw-state [state]
   (q/background 255)
   (draw-player state)
-  (draw-map state))
+  (draw-map state)
+  (draw-path state))
