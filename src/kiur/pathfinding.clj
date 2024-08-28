@@ -8,7 +8,8 @@
 (defn calc-cost [target point]
   (->> (v/make-vector target point)
        (mapv #(math/pow % 2))
-       (reduce +)))
+       (reduce +)
+       #_math/sqrt))
 (defn total-cost [{:keys [heuristic cost]}]
   (+ heuristic cost))
 (defn neighbors [point step]
