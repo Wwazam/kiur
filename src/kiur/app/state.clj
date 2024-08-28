@@ -1,13 +1,28 @@
 (ns kiur.app.state
   (:require
-   [kiur.app.keymap :as keymap]))
+   [kiur.app.keymap :as keymap]
+   [kiur.geometry.polygon :as poly]))
+
+(defn make-random-map [{:keys [width height t-w t-h]
+                        :or {width 100
+                             height 100
+                             t-w 10
+                             t-h 10}}]
+  (->> (for [x (range 0 width)
+             y (range 0 height)]
+         (when (or (= 0 x)
+                   (= 0 y)
+                   (= (dec width) x)
+                   (= (dec height) y)
+                   (< 0.7 (rand)))
+           [(* t-w x) (* t-h y)]))
+       (filter identity)
+       (mapv (fn [[x y]] {:color [0 155 155] :points (poly/rect x y t-w t-h) :type :rect}))))
 
 (defn default-state  []
   {:player {:x 100 :y 100 :speed 3 :r 20}
    :controller {:direction #{}
                 :keymap keymap/dvorak-kb}
-   :map [{:type :poly :points [[50 0] [20 100] [150 150]] :color [23 94 140]}
-         {:type :poly :points [[50 80]  [20 150] [180 250] [180 210]] :color [180 54 23]}
-         {:type :poly :points [[250 0] [220 100] [350 150]] :color [23 94 140]}
-         {:type :poly :points [[250 115] [220 150] [380 250] [380 210]] :color [180 54 23]}]
+   :map (make-random-map {:width 10 :height 10
+                          :t-h 50 :t-w 50})
    :debug false})
