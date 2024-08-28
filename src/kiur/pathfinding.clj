@@ -78,10 +78,11 @@
            path ()]
       (let [{:keys [coord coming-from]} (get cm t)]
         (cond
-          (nil? coord) :no-path
+          (nil? coord) nil
           (= coord start-pos) (vec path)
           :else (recur coming-from (conj path t)))))))
 
 (defn update-path [state]
-  (assoc-in state [:player :path] (astar state (->> state :player :target ((juxt :x :y))))))
-
+  (if-let [target (some->> state :player :target ((juxt :x :y)))]
+    (assoc-in state  [:player :path] (astar state target))
+    state))
